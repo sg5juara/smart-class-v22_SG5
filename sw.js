@@ -1,11 +1,11 @@
 // Ganti versi ini setiap kali Anda mengubah kode HTML/CSS/JS
-// agar browser otomatis memuat pembaruan aplikasi
-const CACHE_NAME = 'smart-class-pro-v1.9';
+// agar browser otomatis membersihkan cache lama dan memuat pembaruan aplikasi
+const CACHE_NAME = 'smart-class-pro-v2.1';
 
 // Daftar file lokal yang WAJIB disimpan di penyimpanan offline
 const urlsToCache = [
   './',
-  './index.html', // Sesuaikan jika nama file HTML Anda berbeda
+  './index.html', // Sesuaikan jika nama file HTML Anda berbeda (misal: class-pro.html)
   './manifest.json'
 ];
 
@@ -15,7 +15,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[Service Worker] Caching App Shell');
+        console.log('[Service Worker] Caching App Shell untuk V2.1');
         return cache.addAll(urlsToCache);
       })
   );
