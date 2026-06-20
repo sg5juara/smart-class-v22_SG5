@@ -353,12 +353,7 @@
 
             let used = new Set();
 
-            let sortedByRank = [...students].sort((a, b) => a.RANKING - b.RANKING);
-            let top10 = sortedByRank.filter(s => s.RANKING <= 10);
-            top10.forEach((s, idx) => {
-                if(!used.has(s.NAMA)) { results[idx % n].push(s); used.add(s.NAMA); }
-            });
-
+            // 1. PRIORITAS UTAMA: SISWA KHUSUS DARI TEXTAREA
             for(let i=0; i<n; i++) {
                 document.getElementById(`req_${i}`).value.split('\n').forEach(name => {
                     let s = name.trim().toUpperCase();
@@ -369,6 +364,19 @@
                 });
             }
 
+            // 2. PRIORITAS KEDUA: RANKING TOP 10 (Disebar rata Kelas A, B, dst)
+            let sortedByRank = [...students].sort((a, b) => a.RANKING - b.RANKING);
+            let top10 = sortedByRank.filter(s => s.RANKING <= 10);
+            let rankCounter = 0;
+            top10.forEach((s) => {
+                if(!used.has(s.NAMA)) { 
+                    results[rankCounter % n].push(s); 
+                    used.add(s.NAMA); 
+                    rankCounter++;
+                }
+            });
+
+            // 3. PRIORITAS KETIGA: SISA SISWA (50:50, Jika ganjil otomatis ke Kelas A)
             let sisaSiswa = students.filter(s => !used.has(s.NAMA));
             
             const getSortKey = (nama) => {
@@ -547,7 +555,6 @@
             }
         }
 
-        // UPDATED: Deteksi Format Gambar Akurat untuk jsPDF
         function getPdfImageFormat(dataUrl) {
             const match = dataUrl.match(/data:image\/(.*);base64/i);
             if (!match) return 'PNG'; 
@@ -570,7 +577,6 @@
             results.forEach((cls, i) => {
                 if(i > 0) doc.addPage();
                 
-                // PENGGUNAAN DETEKSI FORMAT OTOMATIS AGAR LOGO TAMPIL DI GITHUB
                 if(!logoL.startsWith('data:image/gif')) {
                     try { doc.addImage(logoL, getPdfImageFormat(logoL), 15, 10, 20, 20); } catch(e) {}
                 }
